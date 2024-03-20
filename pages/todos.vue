@@ -26,7 +26,7 @@ const addNote = function () {
 };
 
 const editNote = function (i: number) {
-  const input = document.querySelector(`.js-list-note [data-id="${todos.value[i].id}"] input`) as HTMLInputElement;
+  const input = document.querySelector(`.js-list-note [data-id="${todos.value[i].id}"] input[type=text]`) as HTMLInputElement;
   input.focus();
   todos.value[i].isEditing = true;
 };
@@ -70,6 +70,12 @@ const deleteNote = function (i: number) {
         :data-id="todo.id"
       >
         <div class="d-flex align-center">
+          <v-checkbox
+            v-model="todo.isCompleted"
+            class="mr-4"
+            hide-details
+            color="secondary"
+          />
           <v-text-field
             :readonly="!todo.isEditing"
             :model-value="todo.content"
@@ -78,24 +84,18 @@ const deleteNote = function (i: number) {
             @blur="(e: Event) => finishEditingNote(i, e.target.value)"
           />
           <v-btn
-            class="ml-4"
+            class="mx-4"
             :disabled="todo.isCompleted || todo.isEditing"
+            color="info"
             @click="editNote(i)"
           >
             Edit
           </v-btn>
-          <v-switch
-            inset
-            hide-details
-            class="mx-4"
-            color="primary"
-            v-model="todo.isCompleted"
-          />
           <v-btn
             icon="mdi-close"
             width="30"
             height="30"
-            color="error"
+            color="red-darken-1"
             rounded
             @click="deleteNote(i)"
           />
