@@ -5,12 +5,14 @@ const todos = ref([
   {
     id: 1,
     content: 'todo 1',
+    isEditing: false,
   },
   {
     id: 2,
     content: 'todo 2',
+    isEditing: true,
   },
-])
+]);
 </script>
 
 <template>
@@ -32,11 +34,15 @@ const todos = ref([
         :key="todo.id"
       >
         <div class="d-flex align-center">
-          <p>{{ todo.content }}</p>
+          <v-text-field
+            :readonly="!todo.isEditing"
+            :model-value="todo.content"
+            hide-details
+          />
           <v-switch
             inset
             hide-details
-            class="ml-auto mr-4"
+            class="mx-4"
             color="primary"
           />
           <v-btn
@@ -53,7 +59,7 @@ const todos = ref([
 </template>
 
 <style>
-.v-list-item {
-  border-bottom: 1px solid #ccc !important;
+.v-input--readonly {
+  pointer-events: none;
 }
 </style>
