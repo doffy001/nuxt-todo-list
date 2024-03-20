@@ -1,7 +1,11 @@
-<script setup>
-import { ref } from 'vue'
+<script setup lang="ts">
+import { ref } from 'vue';
 
-const todos = ref([
+const todos = ref<{
+  id: number,
+  content: string,
+  isEditing: boolean,
+}[] | []>([
   {
     id: 1,
     content: 'todo 1',
@@ -10,9 +14,10 @@ const todos = ref([
   {
     id: 2,
     content: 'todo 2',
-    isEditing: true,
+    isEditing: false,
   },
 ]);
+
 </script>
 
 <template>
@@ -28,7 +33,7 @@ const todos = ref([
         icon="mdi-plus"
       />
     </div>
-    <v-list>
+    <v-list v-if="todos.length">
       <v-list-item
         v-for="todo in todos"
         :key="todo.id"
@@ -58,7 +63,7 @@ const todos = ref([
   </v-card>
 </template>
 
-<style>
+<style lang="scss">
 .v-input--readonly {
   pointer-events: none;
 }

@@ -8,8 +8,11 @@
   </NuxtLayout>
 </template>
 
-<style>
+<style lang="scss">
   .v-application__wrap {
     justify-content: center;
+    .v-container {
+      max-width: 900px;
+    }
   }
 </style>
