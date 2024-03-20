@@ -25,6 +25,17 @@ const addNote = function () {
   currentNote.value = '';
 };
 
+const editNote = function (i: number) {
+  const input = document.querySelector(`.js-list-note [data-id="${todos.value[i].id}"] input`) as HTMLInputElement;
+  input.focus();
+  todos.value[i].isEditing = true;
+};
+
+const finishEditingNote = function (i: number, newNote: string) {
+  if (newNote) todos.value[i].content = newNote;
+  todos.value[i].isEditing = false;
+}
+
 const deleteNote = function (i: number) {
   todos.value.splice(i, 1);
 };
@@ -49,10 +60,14 @@ const deleteNote = function (i: number) {
         @click="addNote"
       />
     </div>
-    <v-list v-if="todos.length">
+    <v-list
+      v-if="todos.length"
+      class="js-list-note"
+    >
       <v-list-item
         v-for="(todo, i) in todos"
         :key="todo.id"
+        :data-id="todo.id"
       >
         <div class="d-flex align-center">
           <v-text-field
@@ -60,7 +75,15 @@ const deleteNote = function (i: number) {
             :model-value="todo.content"
             :disabled="todo.isCompleted"
             hide-details
+            @blur="(e: Event) => finishEditingNote(i, e.target.value)"
           />
+          <v-btn
+            class="ml-4"
+            :disabled="todo.isCompleted || todo.isEditing"
+            @click="editNote(i)"
+          >
+            Edit
+          </v-btn>
           <v-switch
             inset
             hide-details
