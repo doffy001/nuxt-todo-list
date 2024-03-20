@@ -1,22 +1,42 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
 
-const todos = ref<{
-  id: number,
+type Todo = {
+  id: string,
   content: string,
   isEditing: boolean,
-}[] | []>([
+};
+
+const todos = ref<Todo[]>([
   {
-    id: 1,
+    id: uuidv4(),
     content: 'todo 1',
-    isEditing: false,
+    isEditing: true,
   },
   {
-    id: 2,
+    id: uuidv4(),
     content: 'todo 2',
     isEditing: false,
   },
 ]);
+
+const currentNote = ref('');
+
+const addNote = function () {
+  if (!currentNote.value) return;
+  const newTodo = {
+    id: uuidv4(),
+    content: currentNote.value,
+    isEditing: false,
+  };
+  todos.value.push(newTodo);
+  currentNote.value = '';
+};
+
+const deleteNote = function (i: number) {
+  todos.value.splice(i, 1);
+};
 
 </script>
 
@@ -24,18 +44,23 @@ const todos = ref<{
   <v-card class="pa-4">
     <h1>Todo list</h1>
     <div class="d-flex">
-      <v-text-field placeholder="Take a note..."></v-text-field>
+      <v-text-field
+        v-model="currentNote"
+        placeholder="Take a note..."
+        @keyup.enter="addNote"
+      />
       <v-btn
         class="ml-4"
         width="56"
         height="56"
         rounded="0"
         icon="mdi-plus"
+        @click="addNote"
       />
     </div>
     <v-list v-if="todos.length">
       <v-list-item
-        v-for="todo in todos"
+        v-for="(todo, i) in todos"
         :key="todo.id"
       >
         <div class="d-flex align-center">
@@ -56,6 +81,7 @@ const todos = ref<{
             height="30"
             color="error"
             rounded
+            @click="deleteNote(i)"
           />
         </div>
       </v-list-item>
