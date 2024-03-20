@@ -6,20 +6,10 @@ type Todo = {
   id: string,
   content: string,
   isEditing: boolean,
+  isCompleted: boolean,
 };
 
-const todos = ref<Todo[]>([
-  {
-    id: uuidv4(),
-    content: 'todo 1',
-    isEditing: true,
-  },
-  {
-    id: uuidv4(),
-    content: 'todo 2',
-    isEditing: false,
-  },
-]);
+const todos = ref<Todo[]>([]);
 
 const currentNote = ref('');
 
@@ -29,6 +19,7 @@ const addNote = function () {
     id: uuidv4(),
     content: currentNote.value,
     isEditing: false,
+    isCompleted: false,
   };
   todos.value.push(newTodo);
   currentNote.value = '';
@@ -67,6 +58,7 @@ const deleteNote = function (i: number) {
           <v-text-field
             :readonly="!todo.isEditing"
             :model-value="todo.content"
+            :disabled="todo.isCompleted"
             hide-details
           />
           <v-switch
@@ -74,6 +66,7 @@ const deleteNote = function (i: number) {
             hide-details
             class="mx-4"
             color="primary"
+            v-model="todo.isCompleted"
           />
           <v-btn
             icon="mdi-close"
@@ -93,4 +86,8 @@ const deleteNote = function (i: number) {
 .v-input--readonly {
   pointer-events: none;
 }
+.v-input--disabled
+  input:disabled {
+    text-decoration: line-through;
+  }
 </style>
