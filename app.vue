@@ -1,7 +1,15 @@
 <template>
   <NuxtLayout>
     <v-app>
-      <NuxtPage />
+      <v-container>
+        <NuxtPage />
+      </v-container>
     </v-app>
   </NuxtLayout>
 </template>
+
+<style>
+  .v-application__wrap {
+    justify-content: center;
+  }
+</style>
