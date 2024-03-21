@@ -9,9 +9,8 @@ type Todo = {
   isCompleted: boolean,
 };
 const todos = ref<Todo[]>([]);
-
 const currentNote = ref('');
-
+const isShowSnackbar = ref(false);
 const keyListTodo = ref(1);
 const updateKeyListTodo = function () {
   keyListTodo.value++;
@@ -41,9 +40,10 @@ const finishEditingNote = function (i: number, e: Event) {
   if (newNote) todos.value[i].content = newNote;
   todos.value[i].isEditing = false;
   updateKeyListTodo();
-}
+};
 
 const deleteNote = function (i: number) {
+  isShowSnackbar.value = true;
   todos.value.splice(i, 1);
 };
 
@@ -89,6 +89,7 @@ const deleteNote = function (i: number) {
             :model-value="todo.content"
             :disabled="todo.isCompleted"
             hide-details
+            @keyup.enter="(e: Event) => finishEditingNote(i, e)"
             @blur="(e: Event) => finishEditingNote(i, e)"
           />
           <v-btn
@@ -110,6 +111,12 @@ const deleteNote = function (i: number) {
         </div>
       </v-list-item>
     </v-list>
+    <v-snackbar
+      v-model="isShowSnackbar"
+      timeout="2000"
+    >
+      You deleted the note.
+    </v-snackbar>
   </v-card>
 </template>
 
@@ -117,8 +124,20 @@ const deleteNote = function (i: number) {
 .v-input--readonly {
   pointer-events: none;
 }
-.v-input--disabled
+.v-input--disabled {
   input:disabled {
     text-decoration: line-through;
   }
+}
+
+.v-overlay-container {
+  .v-overlay__content {
+    right: 0;
+    left: auto !important;
+    transform: none !important;
+  }
+  .v-snackbar__content {
+    text-align: center;
+  }
+}
 </style>
