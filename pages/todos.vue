@@ -8,10 +8,14 @@ type Todo = {
   isEditing: boolean,
   isCompleted: boolean,
 };
-
 const todos = ref<Todo[]>([]);
 
 const currentNote = ref('');
+
+const keyListTodo = ref(1);
+const updateKeyListTodo = function () {
+  keyListTodo.value++;
+};
 
 const addNote = function () {
   if (!currentNote.value) return;
@@ -31,9 +35,12 @@ const editNote = function (i: number) {
   todos.value[i].isEditing = true;
 };
 
-const finishEditingNote = function (i: number, newNote: string) {
+const finishEditingNote = function (i: number, e: Event) {
+  const input = e.target as HTMLInputElement | null;
+  const newNote = input?.value;
   if (newNote) todos.value[i].content = newNote;
   todos.value[i].isEditing = false;
+  updateKeyListTodo();
 }
 
 const deleteNote = function (i: number) {
@@ -63,6 +70,7 @@ const deleteNote = function (i: number) {
     <v-list
       v-if="todos.length"
       class="js-list-note"
+      :key="keyListTodo"
     >
       <v-list-item
         v-for="(todo, i) in todos"
@@ -81,7 +89,7 @@ const deleteNote = function (i: number) {
             :model-value="todo.content"
             :disabled="todo.isCompleted"
             hide-details
-            @blur="(e: Event) => finishEditingNote(i, e.target.value)"
+            @blur="(e: Event) => finishEditingNote(i, e)"
           />
           <v-btn
             class="mx-4"
