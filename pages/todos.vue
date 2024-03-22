@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onBeforeMount } from 'vue';
 import { v4 as uuidv4 } from 'uuid';
 
 type Todo = {
@@ -47,6 +47,18 @@ const deleteNote = (i: number) => {
   isShowSnackbar.value = true;
   todos.value.splice(i, 1);
 };
+
+onBeforeMount(async () => {
+  const { data } = await useFetch('/api/todos');
+  if (data.value) {
+    todos.value = data.value.map(({ content }, i) => ({
+      id: uuidv4(),
+      content,
+      isEditing: false,
+      isCompleted: false,
+    }));
+  }
+});
 </script>
 
 <template>

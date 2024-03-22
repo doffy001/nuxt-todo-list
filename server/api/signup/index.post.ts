@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   let newUser = await prisma.user.findUnique({
     where: { email },
   });
-  if (newUser) return null;
+  if (newUser) return createError({ statusCode: 406, message: 'Email exist!' });
   newUser = await prisma.user.create({
     data: { email, name, password },
   });

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const isLogin = ref(false);
+const isLogin = ref(true);
 const formLogin = ref({
   email: '',
   password: '',
@@ -29,14 +29,20 @@ const submitLogin = async () => {
 const submitSignup = async () => {
   if (formSignup.value.email && formSignup.value.name && formSignup.value.password && formSignup.value.confirmPassword) {
     if (formSignup.value.password === formSignup.value.confirmPassword) {
-      const { data } = await useFetch('/api/signup', {
-        method: 'POST',
-        body: JSON.stringify(formSignup.value),
-      });
-      if (data.value) {
-        await navigateTo('/todos');
-      } else {
-        signupErrorMessage.value = 'Email exist!'
+      try {
+        const { data, error } = await useFetch('/api/signup', {
+          method: 'POST',
+          body: JSON.stringify(formSignup.value),
+        });
+        if (error.value) throw new Error(error.value.data.message);
+        if (data.value) {
+          await navigateTo('/todos');
+        } else {
+          signupErrorMessage.value = 'Email exist!'
+        }
+      } catch (err) {
+        const error = err as {message: string}
+        signupErrorMessage.value = error?.message || '';
       }
     } else {
       signupErrorMessage.value = 'Wrong password.'
