@@ -8,15 +8,16 @@ type Todo = {
   isEditing: boolean,
   isCompleted: boolean,
 };
+const userName = 'test user';
 const todos = ref<Todo[]>([]);
 const currentNote = ref('');
 const isShowSnackbar = ref(false);
 const keyListTodo = ref(1);
-const updateKeyListTodo = function () {
+const updateKeyListTodo = () => {
   keyListTodo.value++;
 };
 
-const addNote = function () {
+const addNote = () => {
   if (!currentNote.value) return;
   const newTodo = {
     id: uuidv4(),
@@ -28,13 +29,13 @@ const addNote = function () {
   currentNote.value = '';
 };
 
-const editNote = function (i: number) {
+const editNote = (i: number) => {
   const input = document.querySelector(`.js-list-note [data-id="${todos.value[i].id}"] input[type=text]`) as HTMLInputElement;
   input.focus();
   todos.value[i].isEditing = true;
 };
 
-const finishEditingNote = function (i: number, e: Event) {
+const finishEditingNote = (i: number, e: Event) => {
   const input = e.target as HTMLInputElement | null;
   const newNote = input?.value;
   if (newNote) todos.value[i].content = newNote;
@@ -42,16 +43,15 @@ const finishEditingNote = function (i: number, e: Event) {
   updateKeyListTodo();
 };
 
-const deleteNote = function (i: number) {
+const deleteNote = (i: number) => {
   isShowSnackbar.value = true;
   todos.value.splice(i, 1);
 };
-
 </script>
 
 <template>
   <v-card class="pa-4">
-    <h1>Note</h1>
+    <h1>{{ userName }}'s note</h1>
     <div class="d-flex">
       <v-text-field
         v-model="currentNote"
