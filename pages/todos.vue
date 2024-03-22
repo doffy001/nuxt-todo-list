@@ -51,7 +51,7 @@ const deleteNote = function (i: number) {
 
 <template>
   <v-card class="pa-4">
-    <h1>Todo list</h1>
+    <h1>Note</h1>
     <div class="d-flex">
       <v-text-field
         v-model="currentNote"
