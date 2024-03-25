@@ -78,7 +78,8 @@ type Todo = {
   isEditing: boolean,
   isCompleted: boolean,
 };
-const userName = 'test user';
+const userId = useCookie('userId');
+const userName = useCookie('userName');
 const todos = ref<Todo[]>([]);
 const currentNote = ref('');
 const isShowSnackbar = ref(false);
@@ -119,7 +120,9 @@ const deleteNote = (i: number) => {
 };
 
 onBeforeMount(async () => {
-  const { data } = await useFetch('/api/todos');
+  const { data } = await useFetch('/api/todos', {
+    params: { userId: userId.value }
+  });
   if (data.value) {
     todos.value = data.value.map(({ id, content, isCompleted }) => ({
       id,
