@@ -1,59 +1,3 @@
-<script setup lang="ts">
-
-const isLogin = ref(true);
-const formLogin = ref({
-  email: '',
-  password: '',
-});
-const formSignup = ref({
-  email: '',
-  name: '',
-  password: '',
-  confirmPassword: '',
-});
-const isShowLoginError = ref(false);
-const signupErrorMessage = ref('');
-
-const submitLogin = async () => {
-  const { data: userName } = await useFetch('/api/login', {
-    method: 'POST',
-    body: JSON.stringify(formLogin.value),
-  });
-  if (userName.value) {
-    await navigateTo('/todos');
-  } else {
-    isShowLoginError.value = true;
-  }
-};
-
-const submitSignup = async () => {
-  if (formSignup.value.email && formSignup.value.name && formSignup.value.password && formSignup.value.confirmPassword) {
-    if (formSignup.value.password === formSignup.value.confirmPassword) {
-      try {
-        const { data, error } = await useFetch('/api/signup', {
-          method: 'POST',
-          body: JSON.stringify(formSignup.value),
-        });
-        if (error.value) throw new Error(error.value.data.message);
-        if (data.value) {
-          await navigateTo('/todos');
-        } else {
-          signupErrorMessage.value = 'Email exist!'
-        }
-      } catch (err) {
-        const error = err as {message: string}
-        signupErrorMessage.value = error?.message || '';
-      }
-    } else {
-      signupErrorMessage.value = 'Wrong password.'
-    }
-  } else {
-    signupErrorMessage.value = 'All fields have to be filled.'
-  }
-};
-
-</script>
-
 <template>
   <v-card class="pa-4">
     <h1 class="mb-2">Todo list app</h1>
@@ -118,6 +62,60 @@ const submitSignup = async () => {
     </v-form>
   </v-card>
 </template>
+
+<script setup lang="ts">
+const isLogin = ref(true);
+const formLogin = ref({
+  email: '',
+  password: '',
+});
+const formSignup = ref({
+  email: '',
+  name: '',
+  password: '',
+  confirmPassword: '',
+});
+const isShowLoginError = ref(false);
+const signupErrorMessage = ref('');
+
+const submitLogin = async () => {
+  const { data: userName } = await useFetch('/api/login', {
+    method: 'POST',
+    body: JSON.stringify(formLogin.value),
+  });
+  if (userName.value) {
+    await navigateTo('/todos');
+  } else {
+    isShowLoginError.value = true;
+  }
+};
+
+const submitSignup = async () => {
+  if (formSignup.value.email && formSignup.value.name && formSignup.value.password && formSignup.value.confirmPassword) {
+    if (formSignup.value.password === formSignup.value.confirmPassword) {
+      try {
+        const { data, error } = await useFetch('/api/signup', {
+          method: 'POST',
+          body: JSON.stringify(formSignup.value),
+        });
+        if (error.value) throw new Error(error.value.data.message);
+        if (data.value) {
+          await navigateTo('/todos');
+        } else {
+          signupErrorMessage.value = 'Email exist!'
+        }
+      } catch (err) {
+        const error = err as {message: string}
+        signupErrorMessage.value = error?.message || '';
+      }
+    } else {
+      signupErrorMessage.value = 'Wrong password.'
+    }
+  } else {
+    signupErrorMessage.value = 'All fields have to be filled.'
+  }
+};
+</script>
 
 <style lang="scss" scoped>
 .error-message {

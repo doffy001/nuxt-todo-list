@@ -1,64 +1,3 @@
-<script setup lang="ts">
-import { ref, onBeforeMount } from 'vue';
-
-type Todo = {
-  id: number,
-  content: string,
-  isEditing: boolean,
-  isCompleted: boolean,
-};
-const userName = 'test user';
-const todos = ref<Todo[]>([]);
-const currentNote = ref('');
-const isShowSnackbar = ref(false);
-const keyListTodo = ref(1);
-const updateKeyListTodo = () => {
-  keyListTodo.value++;
-};
-
-const addNote = () => {
-  if (!currentNote.value) return;
-  const newTodo = {
-    id: Math.random(),
-    content: currentNote.value,
-    isEditing: false,
-    isCompleted: false,
-  };
-  todos.value.push(newTodo);
-  currentNote.value = '';
-};
-
-const editNote = (i: number) => {
-  const input = document.querySelector(`.js-list-note [data-id="${todos.value[i].id}"] input[type=text]`) as HTMLInputElement;
-  input.focus();
-  todos.value[i].isEditing = true;
-};
-
-const finishEditingNote = (i: number, e: Event) => {
-  const input = e.target as HTMLInputElement | null;
-  const newNote = input?.value;
-  if (newNote) todos.value[i].content = newNote;
-  todos.value[i].isEditing = false;
-  updateKeyListTodo();
-};
-
-const deleteNote = (i: number) => {
-  isShowSnackbar.value = true;
-  todos.value.splice(i, 1);
-};
-
-onBeforeMount(async () => {
-  const { data } = await useFetch('/api/todos');
-  if (data.value) {
-    todos.value = data.value.map(({ content }, i) => ({
-      id: Math.random(),
-      content,
-      isEditing: false,
-      isCompleted: false,
-    }));
-  }
-});
-</script>
 
 <template>
   <v-card class="pa-4">
@@ -130,6 +69,68 @@ onBeforeMount(async () => {
     </v-snackbar>
   </v-card>
 </template>
+
+<script setup lang="ts">
+import { ref, onBeforeMount } from 'vue';
+
+type Todo = {
+  id: number,
+  content: string,
+  isEditing: boolean,
+  isCompleted: boolean,
+};
+const userName = 'test user';
+const todos = ref<Todo[]>([]);
+const currentNote = ref('');
+const isShowSnackbar = ref(false);
+const keyListTodo = ref(1);
+const updateKeyListTodo = () => {
+  keyListTodo.value++;
+};
+
+const addNote = () => {
+  if (!currentNote.value) return;
+  const newTodo = {
+    id: Math.random(),
+    content: currentNote.value,
+    isEditing: false,
+    isCompleted: false,
+  };
+  todos.value.push(newTodo);
+  currentNote.value = '';
+};
+
+const editNote = (i: number) => {
+  const input = document.querySelector(`.js-list-note [data-id="${todos.value[i].id}"] input[type=text]`) as HTMLInputElement;
+  input.focus();
+  todos.value[i].isEditing = true;
+};
+
+const finishEditingNote = (i: number, e: Event) => {
+  const input = e.target as HTMLInputElement | null;
+  const newNote = input?.value;
+  if (newNote) todos.value[i].content = newNote;
+  todos.value[i].isEditing = false;
+  updateKeyListTodo();
+};
+
+const deleteNote = (i: number) => {
+  isShowSnackbar.value = true;
+  todos.value.splice(i, 1);
+};
+
+onBeforeMount(async () => {
+  const { data } = await useFetch('/api/todos');
+  if (data.value) {
+    todos.value = data.value.map(({ content }, i) => ({
+      id: Math.random(),
+      content,
+      isEditing: false,
+      isCompleted: false,
+    }));
+  }
+});
+</script>
 
 <style lang="scss">
 .v-input--readonly {
