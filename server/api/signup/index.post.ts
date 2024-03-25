@@ -6,10 +6,15 @@ export default defineEventHandler(async (event) => {
   const { email, name, password } = await readBody(event);
   let newUser = await prisma.user.findUnique({
     where: { email },
+  })
+  .catch((error) => {
+    console.error(error);
   });
   if (newUser) return createError({ statusCode: 406, message: 'Email exist!' });
   newUser = await prisma.user.create({
     data: { email, name, password },
+  }).catch((error) => {
+    console.error(error);
   });
   return newUser?.name;
 });

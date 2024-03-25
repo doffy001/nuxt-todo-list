@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import { ref, onBeforeMount } from 'vue';
-import { v4 as uuidv4 } from 'uuid';
 
 type Todo = {
-  id: string,
+  id: number,
   content: string,
   isEditing: boolean,
   isCompleted: boolean,
@@ -20,7 +19,7 @@ const updateKeyListTodo = () => {
 const addNote = () => {
   if (!currentNote.value) return;
   const newTodo = {
-    id: uuidv4(),
+    id: Math.random(),
     content: currentNote.value,
     isEditing: false,
     isCompleted: false,
@@ -52,7 +51,7 @@ onBeforeMount(async () => {
   const { data } = await useFetch('/api/todos');
   if (data.value) {
     todos.value = data.value.map(({ content }, i) => ({
-      id: uuidv4(),
+      id: Math.random(),
       content,
       isEditing: false,
       isCompleted: false,
