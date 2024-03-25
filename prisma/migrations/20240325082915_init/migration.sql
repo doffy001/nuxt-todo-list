@@ -10,6 +10,7 @@ CREATE TABLE "User" (
 CREATE TABLE "Todo" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "content" TEXT NOT NULL,
+    "isCompleted" BOOLEAN NOT NULL DEFAULT false,
     "authorId" INTEGER NOT NULL,
     CONSTRAINT "Todo_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );

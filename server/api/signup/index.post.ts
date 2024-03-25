@@ -16,5 +16,7 @@ export default defineEventHandler(async (event) => {
   }).catch((error) => {
     console.error(error);
   });
-  return newUser?.name;
+  const userId = newUser?.id;
+  const userName = newUser?.name;
+  return { userId, userName };
 });

@@ -1,4 +1,3 @@
-
 <template>
   <v-card class="pa-4">
     <h1>{{ userName }}'s note</h1>
@@ -122,11 +121,11 @@ const deleteNote = (i: number) => {
 onBeforeMount(async () => {
   const { data } = await useFetch('/api/todos');
   if (data.value) {
-    todos.value = data.value.map(({ content }, i) => ({
-      id: Math.random(),
+    todos.value = data.value.map(({ id, content, isCompleted }) => ({
+      id,
       content,
       isEditing: false,
-      isCompleted: false,
+      isCompleted,
     }));
   }
 });

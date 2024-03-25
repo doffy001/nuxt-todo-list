@@ -9,5 +9,9 @@ export default defineEventHandler(async (event) => {
   }).catch((error) => {
     console.error(error);
   });
-  return user?.name;
+  if (!user) return createError({ message: 'Wrong email or password!' });
+  const userId = user?.id;
+  const userName = user?.name;
+  console.log({ userId, userName });
+  return { userId, userName };
 });

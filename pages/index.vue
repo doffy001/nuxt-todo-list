@@ -16,10 +16,10 @@
         type="password"
       />
       <p
-        v-show="isShowLoginError"
+        v-show="loginErrorMessage"
         class="error-message mb-2 text-center"
       >
-        Wrong email or password.
+        {{ loginErrorMessage }}
       </p>
       <div class="d-flex justify-center mb-3">
         <v-btn type="submit">Login</v-btn>
@@ -75,44 +75,60 @@ const formSignup = ref({
   password: '',
   confirmPassword: '',
 });
-const isShowLoginError = ref(false);
+const loginErrorMessage = ref('');
 const signupErrorMessage = ref('');
 
 const submitLogin = async () => {
-  const { data: userName } = await useFetch('/api/login', {
-    method: 'POST',
-    body: JSON.stringify(formLogin.value),
-  });
-  if (userName.value) {
-    await navigateTo('/todos');
-  } else {
-    isShowLoginError.value = true;
+  try {
+    const { data, error } = await useFetch('/api/login', {
+      method: 'POST',
+      body: JSON.stringify(formLogin.value),
+    });
+    if (error.value) throw new Error(error.value.data.message);
+    if (data.value) {
+      console.log(data.value);
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const userId = useCookie('userId', { expires: tomorrow });
+      const userName = useCookie('userName', { expires: tomorrow });
+      userId.value = data.value.userId?.toString();
+      userName.value = data.value.userName;
+      await navigateTo('/todos');
+    }
+  } catch (err) {
+    const error = err as { message: string };
+    loginErrorMessage.value = error?.message || '';
   }
 };
 
 const submitSignup = async () => {
-  if (formSignup.value.email && formSignup.value.name && formSignup.value.password && formSignup.value.confirmPassword) {
-    if (formSignup.value.password === formSignup.value.confirmPassword) {
-      try {
-        const { data, error } = await useFetch('/api/signup', {
-          method: 'POST',
-          body: JSON.stringify(formSignup.value),
-        });
-        if (error.value) throw new Error(error.value.data.message);
-        if (data.value) {
-          await navigateTo('/todos');
-        } else {
-          signupErrorMessage.value = 'Email exist!'
-        }
-      } catch (err) {
-        const error = err as {message: string}
-        signupErrorMessage.value = error?.message || '';
-      }
-    } else {
-      signupErrorMessage.value = 'Wrong password.'
+  if (!(formSignup.value.email && formSignup.value.name && formSignup.value.password && formSignup.value.confirmPassword)) {
+    signupErrorMessage.value = 'All fields have to be filled.';
+    return false;
+  }
+  if (formSignup.value.password !== formSignup.value.confirmPassword) {
+    signupErrorMessage.value = 'Wrong password.';
+    return false;
+  }
+
+  try {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    const userId = useCookie('userId', { expires: tomorrow });
+    const userName = useCookie('userName', { expires: tomorrow });
+    const { data, error } = await useFetch('/api/signup', {
+      method: 'POST',
+      body: JSON.stringify(formSignup.value),
+    });
+    if (error.value) throw new Error(error.value.data.message);
+    if (data.value) {
+      userId.value = data.value.userId?.toString();
+      userName.value = data.value.userName;
+      await navigateTo('/todos');
     }
-  } else {
-    signupErrorMessage.value = 'All fields have to be filled.'
+  } catch (err) {
+    const error = err as { message: string };
+    signupErrorMessage.value = error?.message || '';
   }
 };
 </script>
