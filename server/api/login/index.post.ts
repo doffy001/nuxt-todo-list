@@ -12,6 +12,5 @@ export default defineEventHandler(async (event) => {
   if (!user) return createError({ message: 'Wrong email or password!' });
   const userId = user?.id;
   const userName = user?.name;
-  console.log({ userId, userName });
   return { userId, userName };
 });

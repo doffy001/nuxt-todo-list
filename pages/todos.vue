@@ -32,6 +32,7 @@
             class="mr-4"
             hide-details
             color="secondary"
+            @change="toggleCompletedTodo(i)"
           />
           <v-text-field
             :readonly="!todo.isEditing"
@@ -70,10 +71,11 @@
 </template>
 
 <script setup lang="ts">
+import { v4 as uuidv4 } from 'uuid';
 import { ref, onBeforeMount } from 'vue';
 
 type Todo = {
-  id: number,
+  id: string | number,
   content: string,
   isEditing: boolean,
   isCompleted: boolean,
@@ -88,14 +90,18 @@ const updateKeyListTodo = () => {
   keyListTodo.value++;
 };
 
-const addNote = () => {
+const addNote = async () => {
   if (!currentNote.value) return;
   const newTodo = {
-    id: Math.random(),
+    id: userId.value + '-' + uuidv4(),
     content: currentNote.value,
     isEditing: false,
     isCompleted: false,
   };
+  await useFetch('/api/todos', {
+    method: 'POST',
+    body: { userId, newTodo },
+  });
   todos.value.push(newTodo);
   currentNote.value = '';
 };
@@ -106,24 +112,47 @@ const editNote = (i: number) => {
   todos.value[i].isEditing = true;
 };
 
-const finishEditingNote = (i: number, e: Event) => {
+const finishEditingNote = async (i: number, e: Event) => {
   const input = e.target as HTMLInputElement | null;
   const newNote = input?.value;
-  if (newNote) todos.value[i].content = newNote;
+  if (newNote) {
+    const updatedTodo = todos.value[i];
+    todos.value[i].content = newNote;
+    await useFetch('/api/todos', {
+      method: 'POST',
+      body: { userId, updatedTodo },
+    });
+  }
   todos.value[i].isEditing = false;
   updateKeyListTodo();
 };
 
-const deleteNote = (i: number) => {
+const deleteNote = async (i: number) => {
   isShowSnackbar.value = true;
-  todos.value.splice(i, 1);
+  const deletedTodoId = todos.value.splice(i, 1)[0].id;
+  await useFetch('/api/todos', {
+    method: 'DELETE',
+    body: { deletedTodoId },
+  });
+};
+
+const toggleCompletedTodo = async (i: number) => {
+  const updatedTodo = {
+    id: todos.value[i].id,
+    isCompleted: todos.value[i].isCompleted,
+  };
+  await useFetch('/api/todos', {
+    method: 'POST',
+    body: { userId, updatedTodo },
+  });
 };
 
 onBeforeMount(async () => {
+  await nextTick();
   const { data } = await useFetch('/api/todos', {
     params: { userId: userId.value }
   });
-  if (data.value) {
+  if (data.value?.length) {
     todos.value = data.value.map(({ id, content, isCompleted }) => ({
       id,
       content,

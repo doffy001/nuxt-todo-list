@@ -86,7 +86,6 @@ const submitLogin = async () => {
     });
     if (error.value) throw new Error(error.value.data.message);
     if (data.value) {
-      console.log(data.value);
       const tomorrow = new Date();
       tomorrow.setDate(tomorrow.getDate() + 1);
       const userId = useCookie('userId', { expires: tomorrow });
