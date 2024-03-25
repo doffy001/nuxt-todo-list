@@ -8,7 +8,7 @@ CREATE TABLE "User" (
 
 -- CreateTable
 CREATE TABLE "Todo" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "id" TEXT NOT NULL PRIMARY KEY,
     "content" TEXT NOT NULL,
     "isCompleted" BOOLEAN NOT NULL DEFAULT false,
     "authorId" INTEGER NOT NULL,

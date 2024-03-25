@@ -98,12 +98,12 @@ const addNote = async () => {
     isEditing: false,
     isCompleted: false,
   };
+  todos.value.push(newTodo);
+  currentNote.value = '';
   await useFetch('/api/todos', {
     method: 'POST',
     body: { userId, newTodo },
   });
-  todos.value.push(newTodo);
-  currentNote.value = '';
 };
 
 const editNote = (i: number) => {
@@ -115,6 +115,7 @@ const editNote = (i: number) => {
 const finishEditingNote = async (i: number, e: Event) => {
   const input = e.target as HTMLInputElement | null;
   const newNote = input?.value;
+  todos.value[i].isEditing = false;
   if (newNote) {
     const updatedTodo = todos.value[i];
     todos.value[i].content = newNote;
@@ -123,7 +124,6 @@ const finishEditingNote = async (i: number, e: Event) => {
       body: { userId, updatedTodo },
     });
   }
-  todos.value[i].isEditing = false;
   updateKeyListTodo();
 };
 
