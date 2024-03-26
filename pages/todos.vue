@@ -1,6 +1,9 @@
 <template>
   <v-card class="pa-4">
-    <h1>{{ userName }}'s note</h1>
+    <div class="d-flex align-center justify-space-between">
+      <h1>{{ userName }}'s note</h1>
+      <v-btn @click="logout">Logout</v-btn>
+    </div>
     <div class="d-flex">
       <v-text-field
         v-model="currentNote"
@@ -145,6 +148,12 @@ const toggleCompletedTodo = async (i: number) => {
     method: 'POST',
     body: { userId, updatedTodo },
   });
+};
+
+const logout = () => {
+  userId.value = null;
+  userName.value = null;
+  navigateTo('/');
 };
 
 onBeforeMount(async () => {
