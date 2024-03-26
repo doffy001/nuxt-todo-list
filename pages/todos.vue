@@ -152,8 +152,10 @@ const toggleCompletedTodo = async (i: number) => {
 
 const logout = () => {
   userId.value = null;
-  userName.value = null;
   navigateTo('/');
+  setTimeout(() => {
+    userName.value = null;
+  }, 200);
 };
 
 onBeforeMount(async () => {

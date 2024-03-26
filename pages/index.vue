@@ -105,6 +105,10 @@ const submitSignup = async () => {
     signupErrorMessage.value = 'All fields have to be filled.';
     return false;
   }
+  if (!validateEmail(formSignup.value.email)) {
+    signupErrorMessage.value = 'Wrong email format.';
+    return false;
+  }
   if (formSignup.value.password !== formSignup.value.confirmPassword) {
     signupErrorMessage.value = 'Wrong password.';
     return false;
