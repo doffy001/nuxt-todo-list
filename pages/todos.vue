@@ -1,6 +1,6 @@
 <template>
   <v-card class="pa-4">
-    <div class="d-flex align-center justify-space-between">
+    <div class="d-flex align-center justify-space-between mb-3">
       <h1>{{ userName }}'s note</h1>
       <v-btn @click="logout">Logout</v-btn>
     </div>
@@ -94,10 +94,10 @@ const updateKeyListTodo = () => {
 };
 
 const addNote = async () => {
-  if (!currentNote.value) return;
+  if (!currentNote.value.trim()) return;
   const newTodo = {
     id: userId.value + '-' + uuidv4(),
-    content: currentNote.value,
+    content: currentNote.value.trim(),
     isEditing: false,
     isCompleted: false,
   };
