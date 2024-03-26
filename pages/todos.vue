@@ -175,6 +175,10 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="scss">
+.v-list {
+  max-height: 500px;
+}
+
 .v-input--readonly {
   pointer-events: none;
 }
