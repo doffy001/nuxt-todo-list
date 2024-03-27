@@ -15,3 +15,11 @@ Start the development server on `http://localhost:3000`:
 # npm
 npm run dev
 ```
+
+## Explore the data in Prisma Studio
+
+```bash
+# npx
+npx prisma studio
+```
+
