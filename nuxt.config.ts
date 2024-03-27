@@ -1,11 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 import vuetify, { transformAssetUrls } from 'vite-plugin-vuetify';
 export default defineNuxtConfig({
-  target: 'static',
-  router: {
-    base: '/nuxt-todo-list/'
-  },
-  devtools: { enabled: true },
   build: {
     transpile: ['vuetify'],
   },
